@@ -1,0 +1,18 @@
+## Interface: 11200
+## Title:  |cffffaa00LFMTracker|r
+
+## Notes: Tracks LFM messages in World chat for Raid searching
+## Notes-ruRU: Отслеживание LFM сообщений в ворлд чате для поиска рейдов
+
+## Author: Vlasjack
+## Version: 1.0.2
+
+## X-Website: https://github.com/Vlasjack/LFMTracker
+## X-Category: Raids
+
+## SavedVariables: LFMTrackerDB
+
+LFMTracker.lua
+LFMTracker_UI.lua
+LFMTracker_Minimap.lua
+LFMTracker_Options.lua

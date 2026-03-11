@@ -1,33 +1,33 @@
 # LFMTracker
 
-Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and shows them in a compact filterable UI.
+Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and displays them in a compact, filterable UI.
 
 ## Features
 
-- Captures `World` channel messages that look like LFM.
+- Captures `World` channel messages that look like LFM, case-insensitive and handles numbers/variants.
 - Role filter: `ALL`, `DPS`, `HEAL`, `TANK`.
-- Raid multi-select filter (you can select several raids at once).
-- Compact mode: hide filter blocks to keep the window small.
-- Hide the main window and still get alerts in chat (and optional sound) for matching entries.
+- Raid multi-select filter (select several raids at once).
+- Compact mode: hide filter blocks to reduce window size.
+- Hidden-window alerts: get notifications in chat (and optional sound) even when the window is hidden.
 - Movable launcher icon:
-  - Left click: show/hide window,
-  - Right click: options,
-  - Drag: move anywhere on screen.
+  - Left click: show/hide window
+  - Right click: open options
+  - Drag: move anywhere on screen
 - Options panel:
-  - window opacity,
-  - show/hide launcher icon,
-  - hidden-window alerts,
-  - alert sound toggle.
-- Click row to prepare whisper to message author (uses saved whisper template).
-- Tooltip shows full message text.
+  - Window opacity
+  - Show/hide launcher icon
+  - Hidden-window alerts
+  - Alert sound toggle
+- Click a row to prepare a whisper to the message author (uses saved whisper template)
+- Tooltip shows full message text on hover
 - Slash commands:
-  - `/lfm` or `/lfmtracker` to show/hide window,
-  - `/lfm config` to open options,
-  - `/lfm compact` to toggle compact mode,
-  - `/lfm msg <text>` to set whisper template,
-  - `/lfm msg` to show current whisper template.
+  - `/lfm` or `/lfmtracker` – show/hide window
+  - `/lfm config` – open options
+  - `/lfm compact` – toggle compact mode
+  - `/lfm msg <text>` – set whisper template
+  - `/lfm msg` – show current whisper template
 
-## Install
+## Installation
 
 1. Download the latest release archive.
 2. Extract the contents of the archive.
@@ -35,34 +35,35 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 4. Restart the game or reload UI (`/reload`).
 
 ---
-# LFMTracker
+
+# LFMTracker (RU)
 
 Аддон для WoW Vanilla (1.12) для отслеживания сообщений LFM в канале `World` и отображения их в интерфейсе с фильтрацией.
 
 ## Возможности
 
-- Отслеживает сообщения в канале `World`, похожие на LFM.
+- Отслеживает сообщения в канале `World`, похожие на LFM, без учёта регистра и с учётом любых цифр.
 - Фильтр ролей: `ALL`, `DPS`, `HEAL`, `TANK`.
 - Множественный выбор рейдов (можно выбрать несколько одновременно).
 - Компактный режим: скрывает блоки фильтров для уменьшения окна.
-- Скрытое окно: получение оповещений в чат (опционально звук) при появлении подходящих записей.
+- Скрытое окно: получение оповещений в чат (опционально со звуком) при появлении подходящих записей.
 - Перемещаемый значок:
-  - ЛКМ: показать/скрыть окно,
-  - ПКМ: настройки,
-  - Перетаскивание: перемещение по экрану.
+  - ЛКМ: показать/скрыть окно
+  - ПКМ: открыть настройки
+  - Перетаскивание: перемещение по экрану
 - Панель настроек:
-  - прозрачность окна,
-  - показать/скрыть значок,
-  - оповещения при скрытом окне,
-  - включение/отключение звука оповещений.
-- Клик по строке для подготовки whisper автору сообщения (используется сохраненный шаблон).
-- Подсказка при наведении показывает полный текст сообщения.
+  - Прозрачность окна
+  - Показ/скрытие значка
+  - Оповещения при скрытом окне
+  - Включение/отключение звука оповещений
+- Клик по строке готовит whisper автору сообщения (используется сохранённый шаблон)
+- Подсказка при наведении показывает полный текст сообщения
 - Команды чата:
-  - `/lfm` или `/lfmtracker` показать/скрыть окно,
-  - `/lfm config` открыть настройки,
-  - `/lfm compact` переключить компактный режим,
-  - `/lfm msg <текст>` установить шаблон whisper,
-  - `/lfm msg` показать текущий шаблон whisper.
+  - `/lfm` или `/lfmtracker` – показать/скрыть окно
+  - `/lfm config` – открыть настройки
+  - `/lfm compact` – переключить компактный режим
+  - `/lfm msg <текст>` – установить шаблон whisper
+  - `/lfm msg` – показать текущий шаблон whisper
 
 ## Установка
 

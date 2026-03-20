@@ -4,20 +4,21 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 
 ## Features
 
-- Captures `World` channel messages that look like LFM, case‑insensitive and handling numbers/variants in text.
-- Role filter: `ALL`, `DPS`, `HEAL`, `TANK`.
-- Raid multi‑select filter (select several raids at once).
+- Captures `World` channel messages that look like LFM, case-insensitive and handling numbers/variants in text.
+- Raid multi-select filter (select several raids at once).
 - Compact mode: hides filter controls to reduce window size.
-- Hidden‑window alerts: you still get notifications in chat (and optional sound) when the window is hidden.
+- Hidden-window alerts: you still get an alert sound when the window is hidden.
 - Movable launcher icon:
-  - Left‑click: show/hide the main window,
-  - Right‑click: open options panel,
-  - Hold and drag: reposition the icon anywhere on screen.
+  - Left-click: show/hide the main window,
+  - Right-click: open options panel,
+  - Hold `Shift` or `Ctrl` and drag: move the icon,
+  - Detached mode keeps the icon clamped on-screen.
 - Options panel:
   - Adjust window opacity,
   - Toggle launcher icon visibility,
-  - Enable/disable hidden‑window alerts,
-  - Enable/disable alert sound.
+  - Enable/disable hidden-window alerts,
+  - Enable/disable launcher detach from minimap,
+  - Edit the whisper template.
 - Clicking a row prepares a whisper with the saved whisper template (`/w playername msg`).
 - Hovering over a row shows the full message in a tooltip.
 - Slash commands:
@@ -29,10 +30,11 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 
 ## Installation
 
-1. Download the latest release archive.
+1. Download the latest release archive or click **<>Code** -> **Download ZIP**.
 2. Extract the archive.
-3. Copy the folder `LFMTracker` into your `World of Warcraft/Interface/AddOns/` directory.
-4. Restart the game or reload the UI with `/reload`.
+3. If the extracted folder name ends with `-main`, rename it from something like `LFMTracker-main` to `LFMTracker`.
+4. Copy the folder `LFMTracker` into your `World of Warcraft/Interface/AddOns/` directory.
+5. Restart the game or reload the UI with `/reload`.
 
 ---
 
@@ -42,32 +44,34 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 
 ## Возможности
 
-- Отслеживает сообщения в канале `World`, похожие на LFM, без учёта регистра и с учётом любых цифр в названиях.
-- Фильтр ролей: `ALL`, `DPS`, `HEAL`, `TANK`.
+- Отслеживает сообщения в канале `World`, похожие на LFM, без учёта регистра и с учётом цифр/вариантов в названиях.
 - Множественный выбор рейдов (несколько одновременно).
 - Компактный режим: скрывает блок фильтров для уменьшения размера окна.
-- Оповещения, даже когда окно скрыто (в чат и звуком, если включено).
-- Перемещаемый значок‑запускатель:
+- Оповещения при скрытом окне: если окно скрыто, аддон всё равно проигрывает звуковой сигнал.
+- Перемещаемый значок-запускатель:
   - ЛКМ: показать/скрыть главное окно,
   - ПКМ: открыть панель настроек,
-  - Удерживание + перетаскивание: переместить значок в любое место экрана.
+  - Удерживайте `Shift` или `Ctrl` и перетаскивайте, чтобы двигать значок,
+  - В откреплённом режиме значок остаётся в пределах экрана.
 - Панель настроек:
   - Прозрачность окна,
   - Показ/скрытие значка,
   - Включение/отключение оповещений при скрытом окне,
-  - Включение/отключение звука оповещений.
-- Клик по строке подготавливает whisper с сохранённым шаблоном (`/w playername msg`) .
+  - Открепление значка от миникарты,
+  - Редактирование шаблона whisper.
+- Клик по строке подготавливает whisper с сохранённым шаблоном (`/w playername msg`).
 - Наведение мыши показывает полный текст сообщения во всплывающей подсказке.
 - Команды чата:
-  - `/lfm` или `/lfmtracker` – показать/скрыть окно,
-  - `/lfm config` – открыть настройки,
-  - `/lfm compact` – переключить компактный режим,
-  - `/lfm msg <текст>` – установить шаблон whisper,
+  - `/lfm` или `/lfmtracker` – показать/скрыть окно
+  - `/lfm config` – открыть настройки
+  - `/lfm compact` – переключить компактный режим
+  - `/lfm msg <текст>` – установить шаблон whisper
   - `/lfm msg` – показать текущий шаблон whisper
 
 ## Установка
 
-1. Скачайте последний релиз.
+1. Скачайте последний релиз или нажмите **<>Code** -> **Download ZIP**.
 2. Распакуйте архив.
-3. Переместите папку `LFMTracker` в каталог `World of Warcraft/Interface/AddOns/`.
-4. Перезапустите игру или обновите интерфейс командой `/reload`.
+3. Если после распаковки папка называется, например, `LFMTracker-main`, уберите суффикс `-main` и переименуйте её в `LFMTracker`.
+4. Переместите папку `LFMTracker` в каталог `World of Warcraft/Interface/AddOns/`.
+5. Перезапустите игру или обновите интерфейс командой `/reload`.

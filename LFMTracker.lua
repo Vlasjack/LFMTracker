@@ -4,24 +4,26 @@ local addon = LFMTracker
 addon.entries = {}
 addon.filteredEntries = {}
 addon.scrollOffset = 0
-addon.currentRole = "ALL"
 addon.selectedRaids = { ALL = true }
-addon.maxLines = 8
+addon.maxLines = 7
 addon.maxEntries = 120
 addon.raids = {"ALL", "ONY", "BWL", "ZG", "MC", "ES", "AQ20", "AQ40", "KARA", "NAXX"}
-addon.roles = {"ALL", "DPS", "HEAL", "TANK"}
 
 local frame = CreateFrame("Frame")
 
 local defaults = {
-    opacity = 0.92,
+    opacity = 0.94,
     filtersCollapsed = false,
     showMinimap = true,
+    minimapDetached = false,
+    minimapAngle = 3.5,
+    minimapDetachedX = -220,
+    minimapDetachedY = -140,
     launcherX = -220,
     launcherY = -140,
-    messg = "hi, inv?",
+    messageTemplate = "hi, inv?",
     alertsWhenHidden = true,
-    playSound = true
+    alertSound = "TellMessage"
 }
 
 local function CopyDefaults(dst, src)
@@ -36,68 +38,53 @@ local function Normalize(msg)
     return string.upper(msg or "")
 end
 
-local function ContainsToken(upperMsg, token)
-    return string.find(upperMsg, "(^|[^%a])" .. token .. "([^%a]|$)") ~= nil
+local function Trim(text)
+    return string.gsub(string.gsub(text or "", "^%s+", ""), "%s+$", "")
 end
 
-function addon:IsRoleMatch(entryMsg)
-    local msg = Normalize(entryMsg)
-
-    if self.currentRole == "ALL" then
-        return true
-    elseif self.currentRole == "DPS" then
-        return ContainsToken(msg, "DPS") or ContainsToken(msg, "DD")
-    elseif self.currentRole == "HEAL" then
-        return ContainsToken(msg, "HEAL") or ContainsToken(msg, "HEALER")
-    elseif self.currentRole == "TANK" then
-        return ContainsToken(msg, "TANK") or ContainsToken(msg, "MT") or ContainsToken(msg, "OT")
+function addon:GetMessageTemplate()
+    if not LFMTrackerDB then
+        return ""
     end
 
-    return false
+    if LFMTrackerDB.messageTemplate ~= nil then
+        return LFMTrackerDB.messageTemplate
+    end
+
+    if LFMTrackerDB.messg ~= nil then
+        return LFMTrackerDB.messg
+    end
+
+    return ""
+end
+
+function addon:SetMessageTemplate(text)
+    local cleaned = Trim(text)
+    LFMTrackerDB.messageTemplate = cleaned
+    LFMTrackerDB.messg = cleaned
 end
 
 function addon:IsRaidAliasMatch(upperMsg, raid)
     if raid == "AQ20" then
-        return string.find(upperMsg, "AQ20") ~= nil or 
-               string.find(upperMsg, "RUINS") ~= nil
-               
+        return string.find(upperMsg, "AQ20") ~= nil or string.find(upperMsg, "RUINS") ~= nil
     elseif raid == "AQ40" then
-        return string.find(upperMsg, "AQ40") ~= nil or 
-               string.find(upperMsg, "TEMPLE") ~= nil
-               
+        return string.find(upperMsg, "AQ40") ~= nil or string.find(upperMsg, "TEMPLE") ~= nil
     elseif raid == "ONY" then
-        return string.find(upperMsg, "ONY") ~= nil or      -- ONY, ONY10, ONY20, ONY40
-               string.find(upperMsg, "ONYXIA") ~= nil
-               
+        return string.find(upperMsg, "ONY") ~= nil or string.find(upperMsg, "ONYXIA") ~= nil
     elseif raid == "KARA" then
-        return string.find(upperMsg, "KARA") ~= nil or     -- KARA, KARA10, KARA20
-               string.find(upperMsg, "K%d") ~= nil or      -- K10, K20, K40
-               string.find(upperMsg, "KARAZHAN") ~= nil
-               
+        return string.find(upperMsg, "KARA") ~= nil or string.find(upperMsg, "K%d") ~= nil or string.find(upperMsg, "KARAZHAN") ~= nil
     elseif raid == "ES" then
-        return string.find(upperMsg, "ES") ~= nil or       -- ES, ES15, ES30, ES40
-               string.find(upperMsg, "EMERALD") ~= nil
-               
+        return string.find(upperMsg, "[^%a]ES[^%a]") ~= nil or string.find(upperMsg, "EMERALD") ~= nil
     elseif raid == "ZG" then
-        return string.find(upperMsg, "ZG") ~= nil or 
-               string.find(upperMsg, "ZUL") ~= nil or 
-               string.find(upperMsg, "GURUB") ~= nil
-               
+        return string.find(upperMsg, "ZG") ~= nil or string.find(upperMsg, "ZUL") ~= nil or string.find(upperMsg, "GURUB") ~= nil
     elseif raid == "MC" then
-        return string.find(upperMsg, "MC") ~= nil or 
-               string.find(upperMsg, "MOLTEN") ~= nil or 
-               string.find(upperMsg, "CORE") ~= nil
-               
+        return string.find(upperMsg, "MC") ~= nil or string.find(upperMsg, "MOLTEN") ~= nil or string.find(upperMsg, "CORE") ~= nil
     elseif raid == "BWL" then
-        return string.find(upperMsg, "BWL") ~= nil or 
-               string.find(upperMsg, "BLACK") ~= nil or 
-               string.find(upperMsg, "WING") ~= nil
-               
+        return string.find(upperMsg, "BWL") ~= nil or string.find(upperMsg, "BLACKWING") ~= nil
     elseif raid == "NAXX" then
-        return string.find(upperMsg, "NAXX") ~= nil or 
-               string.find(upperMsg, "NAX") ~= nil or 
-               string.find(upperMsg, "NEXUS") ~= nil
+        return string.find(upperMsg, "NAXX") ~= nil or string.find(upperMsg, "NAX") ~= nil or string.find(upperMsg, "NEXUS") ~= nil
     end
+
     return string.find(upperMsg, raid) ~= nil
 end
 
@@ -176,12 +163,15 @@ function addon:IsWorldChannel(channelName, channelBaseName)
 end
 
 function addon:MatchesActiveFilters(message)
-    return self:IsRoleMatch(message) and self:IsRaidMatch(message)
+    return self:IsRaidMatch(message)
 end
 
+function addon:GetSenderColor(sender)
+    return 1, 1, 1
+end
 
 function addon:BuildWhisperText(playerName)
-    local template = LFMTrackerDB and LFMTrackerDB.messg or ""
+    local template = self:GetMessageTemplate()
     if template and string.len(template) > 0 then
         return "/w " .. playerName .. " " .. template
     end
@@ -197,14 +187,12 @@ function addon:NotifyIfHidden(entry)
         return
     end
 
-    DEFAULT_CHAT_FRAME:AddMessage("|cffffff00[LFMTracker]|r " .. entry.sender .. ": " .. entry.msg)
-
-    if LFMTrackerDB.playSound then
-        PlaySound("TellMessage")
-    end
+    PlaySound(LFMTrackerDB.alertSound or "TellMessage")
 end
 
 function addon:OnNewEntry(entry)
+    entry.receivedAt = entry.receivedAt or date("%H:%M")
+
     table.insert(self.entries, 1, entry)
     while table.getn(self.entries) > self.maxEntries do
         table.remove(self.entries)
@@ -249,7 +237,7 @@ end
 
 function addon:SlashHandler(msg)
     local raw = msg or ""
-    local cmd = string.lower(raw)
+    local cmd = string.lower(Trim(raw))
 
     if cmd == "config" or cmd == "options" then
         self:ToggleOptions()
@@ -259,32 +247,39 @@ function addon:SlashHandler(msg)
         self:ApplyLayout()
         return
     elseif cmd == "msg" or cmd == "message" then
-        DEFAULT_CHAT_FRAME:AddMessage("|cffffff00[LFMTracker]|r message template: " .. (LFMTrackerDB.messg or ""))
+        DEFAULT_CHAT_FRAME:AddMessage("|cffffff00[LFMTracker]|r message template: " .. self:GetMessageTemplate())
         return
     end
 
     local text = string.gsub(raw, "^%s*[Mm][Ss][Gg]%s+", "")
     if text ~= raw then
-        LFMTrackerDB.messg = text
+        self:SetMessageTemplate(text)
         DEFAULT_CHAT_FRAME:AddMessage("|cffffff00[LFMTracker]|r message template saved")
         return
     end
 
     text = string.gsub(raw, "^%s*[Mm][Ee][Ss][Ss][Aa][Gg][Ee]%s+", "")
     if text ~= raw then
-        LFMTrackerDB.messg = text
+        self:SetMessageTemplate(text)
         DEFAULT_CHAT_FRAME:AddMessage("|cffffff00[LFMTracker]|r message template saved")
         return
     end
 
     self:ToggleWindow()
 end
+
 frame:SetScript("OnEvent", function()
     if event == "VARIABLES_LOADED" then
         if LFMTrackerDB == nil then
             LFMTrackerDB = {}
         end
+
+        if LFMTrackerDB.messageTemplate == nil and LFMTrackerDB.messg ~= nil then
+            LFMTrackerDB.messageTemplate = Trim(LFMTrackerDB.messg)
+        end
+
         CopyDefaults(LFMTrackerDB, defaults)
+        addon:SetMessageTemplate(addon:GetMessageTemplate())
 
         if addon.ApplyDB then addon:ApplyDB() end
         if addon.CreateUI then addon:CreateUI() end
@@ -292,8 +287,6 @@ frame:SetScript("OnEvent", function()
         if addon.CreateOptionsUI then addon:CreateOptionsUI() end
 
         DEFAULT_CHAT_FRAME:AddMessage("|cff00ff00LFMTracker loaded|r  /lfm  /lfm config  /lfm msg <text>")
-        
-       
     elseif event == "CHAT_MSG_CHANNEL" then
         local message = arg1
         local sender = arg2

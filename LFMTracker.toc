@@ -5,7 +5,7 @@
 ## Notes-ruRU: Отслеживание LFM сообщений в ворлд чате для поиска рейдов
 
 ## Author: Vlasjack
-## Version: 1.0.2
+## Version: 1.2
 
 ## X-Website: https://github.com/Vlasjack/LFMTracker
 ## X-Category: Raids

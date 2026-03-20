@@ -11,7 +11,12 @@ local function CreateCheckButton(parent, label, key, x, y)
 
     cb:SetScript("OnClick", function()
         LFMTrackerDB[key] = this:GetChecked() and true or false
-        addon:ApplyDB()
+
+        if key == "minimapDetached" then
+            addon:UpdateMinimapButtonPosition()
+        else
+            addon:ApplyDB()
+        end
     end)
 
     return cb
@@ -37,9 +42,9 @@ function addon:CreateOptionsUI()
     optionsFrame = CreateFrame("Frame", "LFMTrackerOptions", UIParent)
     self.optionsFrame = optionsFrame
 
-    optionsFrame:SetWidth(280)
+    optionsFrame:SetWidth(320)
     optionsFrame:SetHeight(240)
-    optionsFrame:SetPoint("CENTER", 280, 140)
+    optionsFrame:SetPoint("CENTER", 300, 140)
     optionsFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
@@ -48,8 +53,8 @@ function addon:CreateOptionsUI()
         edgeSize = 16,
         insets = { left = 4, right = 4, top = 4, bottom = 4 }
     })
-    optionsFrame:SetBackdropColor(0.06, 0.06, 0.09, 0.94)
-    optionsFrame:SetBackdropBorderColor(0.4, 0.4, 0.5)
+    optionsFrame:SetBackdropColor(0.05, 0.07, 0.11, 0.96)
+    optionsFrame:SetBackdropBorderColor(0.30, 0.46, 0.66)
     optionsFrame:EnableMouse(true)
     optionsFrame:SetMovable(true)
     optionsFrame:RegisterForDrag("LeftButton")
@@ -57,7 +62,7 @@ function addon:CreateOptionsUI()
     optionsFrame:SetScript("OnDragStop", function() this:StopMovingOrSizing() end)
 
     local title = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    title:SetPoint("TOP", 0, -10)
+    title:SetPoint("TOP", 0, -12)
     title:SetText("LFMTracker Options")
 
     local closeBtn = CreateFrame("Button", nil, optionsFrame, "UIPanelCloseButton")
@@ -65,12 +70,12 @@ function addon:CreateOptionsUI()
     closeBtn:SetScript("OnClick", function() optionsFrame:Hide() end)
 
     local opacityLabel = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    opacityLabel:SetPoint("TOPLEFT", 14, -40)
+    opacityLabel:SetPoint("TOPLEFT", 16, -42)
     opacityLabel:SetText("Window opacity")
 
     local slider = CreateFrame("Slider", "LFMTrackerOpacitySlider", optionsFrame, "OptionsSliderTemplate")
-    slider:SetPoint("TOPLEFT", 12, -56)
-    slider:SetWidth(220)
+    slider:SetPoint("TOPLEFT", 12, -58)
+    slider:SetWidth(250)
     slider:SetMinMaxValues(10, 100)
     slider:SetValueStep(1)
 
@@ -87,21 +92,37 @@ function addon:CreateOptionsUI()
         addon:ApplyOpacity()
     end)
 
-    local minimapCb = CreateCheckButton(optionsFrame, "Show launcher icon", "showMinimap", 14, -98)
-    local alertsCb = CreateCheckButton(optionsFrame, "Alerts when window hidden", "alertsWhenHidden", 14, -124)
-    local soundCb = CreateCheckButton(optionsFrame, "Play alert sound", "playSound", 14, -150)
-    local flashCb = CreateCheckButton(optionsFrame, "Flash WoW icon (if supported)", "flashClient", 14, -176)
-    local detachedCb = CreateCheckButton(optionsFrame, "Detach launcher from minimap", "minimapDetached", 14, -202)
+    local minimapCb = CreateCheckButton(optionsFrame, "Show launcher icon", "showMinimap", 16, -104)
+    local alertsCb = CreateCheckButton(optionsFrame, "Alert when window hidden", "alertsWhenHidden", 16, -130)
+    local detachedCb = CreateCheckButton(optionsFrame, "Detach launcher from minimap", "minimapDetached", 16, -156)
 
- 
+    local messageLabel = optionsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    messageLabel:SetPoint("TOPLEFT", 16, -190)
+    messageLabel:SetText("Whisper template")
+
+    local messageBox = CreateFrame("EditBox", "LFMTrackerMessageTemplateBox", optionsFrame, "InputBoxTemplate")
+    messageBox:SetPoint("TOPLEFT", 16, -206)
+    messageBox:SetWidth(230)
+    messageBox:SetHeight(24)
+    messageBox:SetAutoFocus(false)
+    messageBox:SetScript("OnEnterPressed", function()
+        addon:SetMessageTemplate(this:GetText())
+        this:ClearFocus()
+    end)
+    messageBox:SetScript("OnEscapePressed", function()
+        this:SetText(addon:GetMessageTemplate())
+        this:ClearFocus()
+    end)
+    messageBox:SetScript("OnEditFocusLost", function()
+        addon:SetMessageTemplate(this:GetText())
+    end)
 
     function optionsFrame:RefreshValues()
-        slider:SetValue(math.floor((LFMTrackerDB.opacity or 0.92) * 100))
+        slider:SetValue(math.floor((LFMTrackerDB.opacity or 0.94) * 100))
         minimapCb:SetChecked(LFMTrackerDB.showMinimap)
         alertsCb:SetChecked(LFMTrackerDB.alertsWhenHidden)
-        soundCb:SetChecked(LFMTrackerDB.playSound)
-        flashCb:SetChecked(LFMTrackerDB.flashClient)
         detachedCb:SetChecked(LFMTrackerDB.minimapDetached)
+        messageBox:SetText(addon:GetMessageTemplate())
     end
 
     optionsFrame:SetScript("OnShow", function()
@@ -109,4 +130,30 @@ function addon:CreateOptionsUI()
     end)
 
     optionsFrame:Hide()
+end
+
+function addon:ApplyDB()
+    if self.ui then
+        self:ApplyOpacity()
+    end
+    if self.minimapButton then
+        if LFMTrackerDB.showMinimap then
+            self.minimapButton:Show()
+        else
+            self.minimapButton:Hide()
+        end
+    end
+    if self.UpdateMinimapButtonPosition then
+        self:UpdateMinimapButtonPosition()
+    end
+    if self.ApplyMinimapIconTexture then
+        self:ApplyMinimapIconTexture()
+    end
+end
+
+function addon:ApplyOpacity()
+    if self.ui then
+        local alpha = LFMTrackerDB.opacity or 0.94
+        self.ui:SetBackdropColor(0.02, 0.03, 0.06, alpha)
+    end
 end

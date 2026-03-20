@@ -32,7 +32,7 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 
 1. Download the latest release archive or click **<>Code** -> **Download ZIP**.
 2. Extract the archive.
-3. If the extracted folder name ends with `-main`, rename it from something like `LFMTracker-main` to `LFMTracker`.
+3. If the extracted folder name ends with `-main`, rename it from something like `LFMTracker-main`.
 4. Copy the folder `LFMTracker` into your `World of Warcraft/Interface/AddOns/` directory.
 5. Restart the game or reload the UI with `/reload`.
 
@@ -72,6 +72,6 @@ Addon for WoW Vanilla (1.12) that tracks LFM messages in the `World` channel and
 
 1. Скачайте последний релиз или нажмите **<>Code** -> **Download ZIP**.
 2. Распакуйте архив.
-3. Если после распаковки папка называется, например, `LFMTracker-main`, уберите суффикс `-main` и переименуйте её в `LFMTracker`.
+3. Если после распаковки папка называется, например, `LFMTracker-main`, уберите суффикс `-main`.
 4. Переместите папку `LFMTracker` в каталог `World of Warcraft/Interface/AddOns/`.
 5. Перезапустите игру или обновите интерфейс командой `/reload`.
